@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 from Drivers import *
 from RestApi import RestApi
+
+
 class Controller:
     """
     This class is used to hold the following components of dycosa
@@ -20,8 +22,8 @@ class Controller:
             for subObj in dir(obj):
                 cls = getattr(obj, subObj)
                 if (cls is not Driver and isinstance(cls, type) and issubclass(cls, Driver)):
-                    clsObj = cls()
-                    drivers[clsObj.__name__] = clsObj
+                    clsobj = cls()
+                    drivers[clsobj.__name__] = clsobj
         return drivers
 
     def run(self):

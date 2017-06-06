@@ -10,6 +10,9 @@ except:
 
 
 class RestApi:
+    """
+    This class ist used to handle HTTP(S) Requests
+    """
 
     HTTP_200 = """HTTP/1.1 200 OK
 Server: Dycosa (Python)
@@ -63,12 +66,12 @@ Connection: Closed
         if (isinstance(value, Driver)):
             result['functions'] = list()
             for fnc in dir(value):
-                if(not fnc.startswith("__")):  # Skip internal methods and propertys
+                if(not fnc.startswith("__") or fnc == "__name__"):  # Skip internal methods and propertys
                     fnc_value = getattr(value, fnc)
                     if(type(fnc_value) == MethodType or type(fnc_value) == FunctionType):
                         result['functions'].append(fnc)
                     else:
-                        result[fnc] = fnc_value
+                        result[fnc.lstrip("_").rstrip("_")] = fnc_value
         elif (type(value) == MethodType):
             result = value()
         elif (type(value) == FunctionType):
@@ -77,43 +80,28 @@ Connection: Closed
             result = None
         return result
 
-    def run(self, micropython_optimize=False):
+    def run(self, ip=".0.0.0.0"):
         request_pattern = "(GET|POST)?\ \/([\/\w*]*)\ (.*)\/(\.*.*)"
         request_regex = re.compile(request_pattern)
         s = socket.socket()
 
         # Binding to all interfaces - server will be accessible to other hosts!
-        ai = socket.getaddrinfo("0.0.0.0", 8080)
-        print("Bind address info:", ai)
+        ai = socket.getaddrinfo(ip, 8080)
         addr = ai[0][-1]
 
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind(addr)
         s.listen(5)
-        print("Listening, connect your browser to http://<this_host>:8080/")
+        print("REST-API: controller is running")
 
-        counter = 0
         while True:
             res = s.accept()
             client_sock = res[0]
             client_addr = res[1]
-            print("Client address:", client_addr)
-            print("Client socket:", client_sock)
+            print("REST-API: Handle request from", client_addr)
 
-            if not micropython_optimize:
-                # To read line-oriented protocol (like HTTP) from a socket (and
-                # avoid short read problem), it must be wrapped in a stream (aka
-                # file-like) object. That's how you do it in CPython:
-                client_stream = client_sock.makefile("rwb")
-            else:
-                # .. but MicroPython socket objects support stream interface
-                # directly, so calling .makefile() method is not required. If
-                # you develop application which will run only on MicroPython,
-                # especially on a resource-constrained embedded device, you
-                # may take this shortcut to save resources.
-                client_stream = client_sock
+            client_stream = client_sock.makefile("rwb")
 
-            print("Request:")
             req = client_stream.readline().decode('ascii')
             req = request_regex.search(req)
             url = req.groups()[1]
@@ -121,7 +109,6 @@ Connection: Closed
                 h = client_stream.readline()
                 if h == b"" or h == b"\r\n":
                     break
-                print(h)
             content = self.getcontent(url)
             if(content is None):
                 response = self.HTTP_404
@@ -131,10 +118,7 @@ Connection: Closed
             client_stream.write(response.encode('ascii'))
 
             client_stream.close()
-            if not micropython_optimize:
-                client_sock.close()
-            counter += 1
-            print()
+            client_sock.close()
 
 
 
