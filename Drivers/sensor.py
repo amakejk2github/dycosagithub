@@ -1,6 +1,7 @@
 from . import Driver
 class Sensor(Driver):
     __name__ = "Sensor"
+    name = "Blafasel"
 
     def getValue(self):
         rv = dict()

@@ -1,36 +1,49 @@
 #!/usr/bin/python3
-from Drivers import *
 import re
 import json
-#from types import ModuleType, ClassType
+from Drivers import Driver
+from types import *
 try:
     import usocket as socket
 except:
     import socket
 
 class RestApi:
-    loadedDrivers = dict()
 
     CONTENT = b"""\
     HTTP/1.0 200 OK
 
     Hello #%d from MicroPython!"""
 
-    def loadDrivers(self):
-        drivers = dict()
-        global_objs = list(globals().items())
-        for name, obj in global_objs:
-            for subObj in dir(obj):
-                cls = getattr(obj, subObj)
-                if(cls is not Driver and isinstance(cls, type) and issubclass(cls, Driver)):
-                    clsObj = cls()
-                    self.loadedDrivers[clsObj.__name__] = clsObj
                     
-    def __init__(self):
-        self.loadDrivers()
+    def __init__(self, drivers):
+        self.loadedDrivers = drivers
+
+    def getContent(self, req):
+        result = dict()
+        value = self.loadedDrivers
+        for i in range(2, len(req)):
+            if(type(value) is dict):
+                value = value[req[i]]
+            else:
+                value = getattr(value, req[i])
+
+        if (isinstance(value, Driver)):
+            result['functions'] = list()
+            for fnc in dir(value):
+                if(not fnc.startswith("__")):
+                    if(type(value) == MethodType or type(value) == FunctionType):
+                        result[value.__name__] = value
+                    else:
+                        result['functions'].append(fnc)
+        elif (type(value) == MethodType):
+            result = value()
+        elif (type(value) == FunctionType):
+            print("Not implemented")
+        return result
 
     def run(self, micropython_optimize=False):
-        request_pattern = "(GET|POST)?\ ([\/\w*]*)\ (.*)\/(\.*.*)"
+        request_pattern = "(GET|POST)?\ \/([\/\w*]*)\ (.*)\/(\.*.*)"
         request_regex = re.compile(request_pattern)
         s = socket.socket()
 
@@ -69,22 +82,13 @@ class RestApi:
             req = client_stream.readline().decode('ascii')
             req = request_regex.search(req)
             url = req.groups()[1].split('/')
-            print(req.groups())
+            print(url)
             while True:
                 h = client_stream.readline()
                 if h == b"" or h == b"\r\n":
                     break
                 print(h)
-            if(len(url) == 4):
-                links = list()
-                for link in dir(self.loadedDrivers[url[3]]):
-                    if not link.startswith('__'):
-                        links.append(link)
-                result = dict()
-                result['links'] = links
-            else:
-                result = getattr(self.loadedDrivers[url[3]], url[4])()
-            client_stream.write(json.dumps(result).encode('ascii'))
+            client_stream.write(json.dumps(self.getContent(url)).encode('ascii'))
 
             client_stream.close()
             if not micropython_optimize:
@@ -93,6 +97,4 @@ class RestApi:
             print()
 
 
-if __name__ == "__main__":
-    api = RestApi()
-    api.run()
+
