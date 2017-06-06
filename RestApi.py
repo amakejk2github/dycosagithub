@@ -8,38 +8,73 @@ try:
 except:
     import socket
 
+
 class RestApi:
 
-    CONTENT = b"""\
-    HTTP/1.0 200 OK
+    HTTP_200 = """HTTP/1.1 200 OK
+Server: Dycosa (Python)
+Content-Length: {length}
+Content-Type: text/json; charset=iso-8859-1
+Connection: Closed
 
-    Hello #%d from MicroPython!"""
+{response}
+"""
 
+    HTTP_404 = """HTTP/1.1 404 Not Found
+Server: Dycosa (Python)
+Content-Length: 210
+Content-Type: text/html; charset=iso-8859-1
+Connection: Closed
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+
+<head>
+   <title>404 Not Found</title>
+</head>
+
+<body>
+   <h1>Not Found</h1>
+   <p>The requested URL was not found on this server.</p>
+</body>
+
+</html>
+"""
                     
     def __init__(self, drivers):
         self.loadedDrivers = drivers
 
-    def getContent(self, req):
+    def getcontent(self, uri):
+        req = uri.rstrip('/').split('/')
         result = dict()
         value = self.loadedDrivers
         for i in range(2, len(req)):
             if(type(value) is dict):
-                value = value[req[i]]
+                if(req[i] in value):
+                    value = value[req[i]]
+                else:
+                    return None
             else:
-                value = getattr(value, req[i])
+                if(hasattr(value, req[i])):
+                    value = getattr(value, req[i])
+                else:
+                    return None
 
         if (isinstance(value, Driver)):
             result['functions'] = list()
             for fnc in dir(value):
-                if(not fnc.startswith("__")):
-                    if(type(value) == MethodType or type(value) == FunctionType):
-                        result[value.__name__] = value
-                    else:
+                if(not fnc.startswith("__")):  # Skip internal methods and propertys
+                    fnc_value = getattr(value, fnc)
+                    if(type(fnc_value) == MethodType or type(fnc_value) == FunctionType):
                         result['functions'].append(fnc)
+                    else:
+                        result[fnc] = fnc_value
         elif (type(value) == MethodType):
             result = value()
         elif (type(value) == FunctionType):
             print("Not implemented")
+        else:
+            result = None
         return result
 
     def run(self, micropython_optimize=False):
@@ -81,14 +116,19 @@ class RestApi:
             print("Request:")
             req = client_stream.readline().decode('ascii')
             req = request_regex.search(req)
-            url = req.groups()[1].split('/')
-            print(url)
+            url = req.groups()[1]
             while True:
                 h = client_stream.readline()
                 if h == b"" or h == b"\r\n":
                     break
                 print(h)
-            client_stream.write(json.dumps(self.getContent(url)).encode('ascii'))
+            content = self.getcontent(url)
+            if(content is None):
+                response = self.HTTP_404
+            else:
+                content = json.dumps(content)
+                response = self.HTTP_200.format(length=len(content), response=content)
+            client_stream.write(response.encode('ascii'))
 
             client_stream.close()
             if not micropython_optimize:
