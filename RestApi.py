@@ -80,7 +80,7 @@ Connection: Closed
             result = None
         return result
 
-    def run(self, ip=".0.0.0.0"):
+    def run(self, ip="0.0.0.0"):
         request_pattern = "(GET|POST)?\ \/([\/\w*]*)\ (.*)\/(\.*.*)"
         request_regex = re.compile(request_pattern)
         s = socket.socket()
