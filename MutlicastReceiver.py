@@ -1,7 +1,7 @@
 class MulticastReceiver:
     """
-    Simple class to Reciving Multicast Announcments and Searches
-    If nessacary it also reacts to those messages
+    Simple class to recieving multicast announcements and searches
+    If necessary it also reacts to those messages
     """
     
     def __init__(self):
