@@ -1,6 +1,6 @@
 class MulticastSender:
     """
-    Simple Class to do Multicast annoucments and Searches
+    Simple class to do multicast announcements and searches
     """
     def __init__(self):
         pass
