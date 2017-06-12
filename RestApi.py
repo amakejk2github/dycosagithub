@@ -11,7 +11,7 @@ except:
 
 class RestApi:
     """
-    This class ist used to handle HTTP(S) Requests
+    This class is used to handle HTTP(S) requests
     """
 
     HTTP_200 = """HTTP/1.1 200 OK
