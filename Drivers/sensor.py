@@ -3,6 +3,7 @@ from . import Driver
 
 class Sensor(Driver):
     __name__ = "Sensor"
+    endpoint = "TemperaturSensor"
 
     def get_value(self):
         rv = dict()
