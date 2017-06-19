@@ -30,6 +30,7 @@ class Controller:
                     while (endpoint + str(i)) in drivers:
                         i = i + 1
                     drivers[endpoint + str(i)] = clsobj
+                    print("Loaded driver of type {type} with endpoint {endpoint}".format(type = clsobj.__name__, endpoint = endpoint + str(i)))
         return drivers
 
     def run(self):
