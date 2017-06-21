@@ -2,7 +2,7 @@ from Jobs import Job
 class EggJob(Job):
     
     def __init__(self):
-        self.time = self.jobHelper.get_value("jobs/eggJob/getTime")['current_time']
+        self.time = self.jobHelper.get_value("job/eggJob/getTime")['current_time']
         if self.time is None:
             self.time = 0
         self.value = self.jobHelper.drivers["encoder0"].value

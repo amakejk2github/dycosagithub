@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from dycosa.drivers import *
-from RestApi import RestApi
+from rest_api import RestApi
 
 
 class Controller:
