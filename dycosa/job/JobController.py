@@ -5,9 +5,9 @@ except:
     from asyncio import get_event_loop, open_connection, start_server, sleep_ms
 class JobController:
     """
-    This class manages the jobs and execute them if necessary
+    This class manages the job and execute them if necessary
     """
-    JobDirectory = "Jobs"
+    JobDirectory = "job"
     def __init__(self):
         self.queued_jobs = queue.Queue()
         if not os.path.exists(self.JobDirectory):
