@@ -1,5 +1,5 @@
-from dycosa.controller import controller
+from dycosa.controller.controller import Controller
 
 if __name__ == "__main__":
-    con = controller()
+    con = Controller()
     con.run()
