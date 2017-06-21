@@ -1,3 +1,4 @@
+from Jobs import Job
 class EggJob(Job):
     
     def __init__(self):
