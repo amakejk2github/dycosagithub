@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from drivers import *
+from dycosa.drivers import *
 from RestApi import RestApi
 
 
