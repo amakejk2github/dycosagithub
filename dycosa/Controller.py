@@ -23,7 +23,14 @@ class Controller:
                 cls = getattr(obj, subObj)
                 if (cls is not Driver and isinstance(cls, type) and issubclass(cls, Driver)):
                     clsobj = cls()
-                    drivers[clsobj.__name__] = clsobj
+                    if not hasattr(clsobj, "endpoint"):
+                        raise Exception("Driver {driver} does not implment the endpoint property".format(driver = clsobj.__name__))
+                    endpoint = clsobj.endpoint
+                    i = 0
+                    while (endpoint + str(i)) in drivers:
+                        i = i + 1
+                    drivers[endpoint + str(i)] = clsobj
+                    print("Loaded driver of type {type} with endpoint {endpoint}".format(type = clsobj.__name__, endpoint = endpoint + str(i)))
         return drivers
 
     def run(self):

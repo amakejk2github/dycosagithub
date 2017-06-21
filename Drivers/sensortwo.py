@@ -1,13 +1,13 @@
 from . import Driver
 
 
-class Sensor(Driver):
-    __name__ = "Sensor"
+class Sensortwo(Driver):
+    __name__ = "Sensortwo"
     endpoint = "TemperaturSensor"
 
     def get_value(self):
         rv = dict()
-        rv['sensor_value'] = 42
+        rv['sensor_value'] = 2
         return rv
 
     def get_unit(self):
