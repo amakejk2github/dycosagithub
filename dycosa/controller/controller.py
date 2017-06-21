@@ -37,9 +37,4 @@ class Controller:
         api = RestApi(self.drivers)
         api.run()
 
-if __name__ == "__main__":
-    con = Controller()
-    con.run()
-
-
 
