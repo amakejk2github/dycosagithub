@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import re
 import json
-from Drivers import Driver
+from drivers import Driver
 from types import *
 try:
     import usocket as socket
