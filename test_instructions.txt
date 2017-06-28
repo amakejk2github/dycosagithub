@@ -1,4 +1,4 @@
-Examples for pytest :
+﻿Examples for pytest :
 
 The simple test
 #-----------------------------------
@@ -10,7 +10,7 @@ def test_function():
 
 
 Trying to catch/get an exception
-#-----------------------------------
+#------------------------------------
 
 import pytest
 
