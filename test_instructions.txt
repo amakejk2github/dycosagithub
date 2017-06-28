@@ -22,6 +22,9 @@ def test_function():
 
 
 Using fixtures to avoid redundancy
+Fixtures creating instances of test objects and preparing the system,
+so the test can run, without having to create in the test itself
+Note that a fixture will create a new instance every time its called
 #-----------------------------------
 
 import pytest
@@ -37,7 +40,7 @@ def test_function(prefab):
 ######################################################
 
 
-Using parametrized tests
+Using parametrized tests for different sets of parameters
  #-----------------------------------
 
 import pytest
