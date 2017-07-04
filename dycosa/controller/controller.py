@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 from dycosa.drivers import *
-from rest_api import RestApi
-
+from dycosa.controller.rest_api import RestApi
 
 class Controller:
     """
