@@ -1,5 +1,6 @@
-from dycosa.controller import controller
+#!/usr/bin/python3
+from dycosa.controller.controller import Controller
 
 if __name__ == "__main__":
-    con = controller.Controller()
+    con = Controller()
     con.run()

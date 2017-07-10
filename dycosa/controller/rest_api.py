@@ -47,6 +47,18 @@ Connection: Closed
     def __init__(self, drivers):
         self.loadedDrivers = drivers
 
+    def get_class_contet(self, value):
+        result = dict()
+        result['functions'] = list()
+        for fnc in dir(value):
+            if (not fnc.startswith("__") or fnc == "__name__"):  # Skip internal methods and propertys
+                fnc_value = getattr(value, fnc)
+                if (type(fnc_value) == MethodType or type(fnc_value) == FunctionType):
+                    result['functions'].append(fnc)
+                else:
+                    result[fnc.lstrip("_").rstrip("_")] = fnc_value
+        return result
+
     def getcontent(self, uri):
         req = uri.rstrip('/').split('/')
         result = dict()
@@ -62,16 +74,12 @@ Connection: Closed
                     value = getattr(value, req[i])
                 else:
                     return None
-
+        if value == self.loadedDrivers and len(req) == 2: #ToDo check API-Version
+            for driver in self.loadedDrivers:
+                result[driver] = self.get_class_contet(self.loadedDrivers[driver])
+            return result
         if (isinstance(value, Driver)):
-            result['functions'] = list()
-            for fnc in dir(value):
-                if(not fnc.startswith("__") or fnc == "__name__"):  # Skip internal methods and propertys
-                    fnc_value = getattr(value, fnc)
-                    if(type(fnc_value) == MethodType or type(fnc_value) == FunctionType):
-                        result['functions'].append(fnc)
-                    else:
-                        result[fnc.lstrip("_").rstrip("_")] = fnc_value
+           result = self.get_class_contet(value)
         elif (type(value) == MethodType):
             result = value()
         elif (type(value) == FunctionType):
