@@ -28,6 +28,15 @@ class JobController:
     def call_job(self, name, method, payload):
         pass
 
+    def add_restendpoint(self, jobname, functionname, function):
+        if hasattr(self, jobname):
+            obj = getattr(self, jobname)
+            setattr(obj, functionname, function)
+        else:
+            obj = object()
+            setattr(obj, functionname, function)
+            setattr(self, jobname, obj)
+
     def run(self):
         while True:
             if not self.queued_jobs.empty():
