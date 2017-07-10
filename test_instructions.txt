@@ -1,0 +1,91 @@
+﻿Examples for pytest :
+
+The simple test
+#-----------------------------------
+
+def test_function():
+    assert function(args) == wanted_result
+
+#################################################
+
+
+Trying to catch/get an exception
+#------------------------------------
+
+import pytest
+
+def test_function():
+    with pytest.raises(Exception):
+        function(args)
+
+###################################################
+
+
+Using fixtures to avoid redundancy
+Fixtures creating instances of test objects and preparing the system,
+so the test can run, without having to create in the test itself
+Note that a fixture will create a new instance every time its called
+#-----------------------------------
+
+import pytest
+
+@pytest.fixture
+def prefab(initial_values):
+    return prefab_object(initial_values)
+
+
+def test_function(prefab):
+    assert prefab_object.value == initial_value
+
+######################################################
+
+
+Using parametrized tests for different sets of parameters
+ #-----------------------------------
+
+import pytest
+
+@pytest.mark.parametrize("args_name1, args_name2" , [
+    ('a', 20),
+    ('b', 'i'),
+    ("Hello", "World"),
+])
+
+def test_function(args_name1, args_name2):
+    test_object = object()
+    object.doStuff(args_name1)
+    assert object.result == args_name2
+
+########################################################
+
+
+Combining all these to have the best experience
+#---------------------------------------
+
+import pytest
+
+@pytest.fixture
+def prefab(initial_values):
+    return prefab_object(initial_values)
+
+@pytest.mark.parametrize("args_name1, args_name2" , [
+    ('a', 20),
+    ('b', 'i'),
+    ("Hello", "World"),
+])
+
+def test_function1(prefab, args_name1, args_name2):
+    prefab_object.doStuff(args_name1)
+    assert prefab_object.result == args_name2
+
+def test_function2(prefab, args_name1, args_name2):
+    with pytest.raises(dumbStuffException):
+        object.tryDumbStuff(args_name1, args_name2)
+
+#############################################################
+
+
+
+
+Eine gute Website die ich noch gefunden habe ist : https://semaphoreci.com/community/tutorials/testing-python-applications-with-pytest
+Da steht nochmal ein bisschen Text dazu und nochmal ähnliche Beispiele, aber eigentlich sollte es schon relativ klar geworden sein
