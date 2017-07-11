@@ -7,7 +7,7 @@ setup(name='dycosa',
       author='EMT-SET',
       author_email='webersen@emt.upb.de',
       license='Unknown',
-      packages=['dycose'],
+      packages=['dycosa'],
       install_requires=[
           '',
       ],
