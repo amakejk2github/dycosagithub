@@ -1,10 +1,7 @@
 class Job:
     
-    def __init__(self):
-        pass
-
-    def run(self):
-        pass
+    def __init__(self, jobhelper):
+        self.jobhelper = jobhelper
 
     def restendpoint(self, func):
         self.jobhelper.add_restendpoint(func)
