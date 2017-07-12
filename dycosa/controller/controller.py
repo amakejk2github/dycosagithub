@@ -1,6 +1,7 @@
 from dycosa.drivers import *
 from dycosa.controller.rest_api import RestApi
-
+from dycosa.job.job_controller import JobController
+import asyncio
 class Controller:
     """
     This class is used to hold the following components of dycosa
@@ -36,7 +37,20 @@ class Controller:
         return drivers
 
     def run(self):
+        job_controller = JobController()
+        self.drivers['jobs'] = job_controller
+        #config_controller = ConfigController()
+        #self.drivers['config'] = configController
+        #mcast_controller = McastController()
         api = RestApi(self.drivers)
-        api.run()
+        loop = asyncio.get_event_loop()
+        tasks = [
+            job_controller.run(),
+            api.run()
+            #mcast_controller.run(),
+            #config_controller.run() maybe not nessecarry?
+        ]
+        loop.run_until_complete(asyncio.wait(tasks))
+        loop.close()
 
 

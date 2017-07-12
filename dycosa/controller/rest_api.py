@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import re
 import json
+import asyncio
 from dycosa.drivers import Driver
 from types import *
 try:
@@ -88,6 +89,7 @@ Connection: Closed
             result = None
         return result
 
+    @asyncio.coroutine
     def run(self, ip="0.0.0.0"):
         request_pattern = "(GET|POST)?\ \/([\/\w*]*)\ (.*)\/(\.*.*)"
         request_regex = re.compile(request_pattern)
@@ -103,6 +105,7 @@ Connection: Closed
         print("REST-API: controller is running")
 
         while True:
+            yield from asyncio.sleep(1)
             res = s.accept()
             client_sock = res[0]
             client_addr = res[1]

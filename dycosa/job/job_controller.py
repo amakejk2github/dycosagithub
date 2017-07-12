@@ -1,16 +1,15 @@
 import os
 import time
-try:
-    from uasyncio import get_event_loop, open_connection, start_server, sleep_ms
-except:
-    from asyncio import get_event_loop, open_connection, start_server, sleep_ms
-class JobController:
+import asyncio
+from dycosa.drivers import Driver
+class JobController(Driver):
     """
     This class manages the job and execute them if necessary
     """
     JobDirectory = "job"
     timed_jobs = list()
     periodic_jobs = list()
+    jobs = list()
     def __init__(self):
         if not os.path.exists(self.JobDirectory):
             os.makedirs(self.JobDirectory)
@@ -42,8 +41,11 @@ class JobController:
             setattr(obj, endpoint, function)
             setattr(self, jobname, obj)
 
+    @asyncio.coroutine
     def run(self):
+        print("Job-Controller: controller is running")
         while True:
+            yield from asyncio.sleep(1)
             for fnc in self.periodic_jobs:
                 if time.time() + fnc[1] >= fnc[2]:
                     fnc[0]()
