@@ -3,9 +3,11 @@ class Job:
     def __init__(self, jobhelper):
         self.jobhelper = jobhelper
 
-    def restendpoint(self, func):
-        self.jobhelper.add_restendpoint(func)
-        return func
+    def restendpoint(self, endpoint):
+        def wrapper(func):
+            self.jobhelper.add_restendpoint(self.__name__, endpoint, func)
+            return func
+        return wrapper
 
     def run_periodically(self, period):
         def wrapper(func):
