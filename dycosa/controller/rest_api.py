@@ -96,10 +96,8 @@ Connection: Closed
             return result
         if (isinstance(value, Driver)):
            result = self.get_class_contet(value)
-        elif (type(value) == MethodType):
-            result = value()
-        elif (type(value) == FunctionType):
-            print("Not implemented")
+        elif (type(value) == MethodType or type(value) == FunctionType):
+            result = value
         else:
             result = None
         return result
@@ -108,6 +106,8 @@ Connection: Closed
     def run(self, ip="0.0.0.0"):
         request_pattern = "(GET|POST)?\ \/([\/\w*]*)\ (.*)\/(\.*.*)"
         request_regex = re.compile(request_pattern)
+        content_pattern = "Content-Length: ([0-9]+)"
+        content_regex = re.compile(content_pattern)
         s = socket.socket()
 
         # Binding to all interfaces - server will be accessible to other hosts!
@@ -131,20 +131,41 @@ Connection: Closed
             req = client_stream.readline().decode('ascii')
             req = request_regex.search(req)
             url = req.groups()[1]
+            method = req.groups()[0]
+            content_length = -1
             while True:
                 h = client_stream.readline()
+                decoded_header = h.decode('ascii')
+                if content_regex.match(decoded_header):
+                    content_length = int(content_regex.search(decoded_header).groups()[0])
                 if h == b"" or h == b"\r\n":
                     break
+            if content_length != -1:
+                parameters = json.loads(client_stream.read(content_length).decode('ascii'))
+            else:
+                parameters = dict()
             try:
                 content = self.getcontent(url)
                 if(content is None):
                     response = self.RESPONSE_HEADERS.format(status=self.HTTP_404, length=len(self.HTTP_404_RESPONSE), response=self.HTTP_404_RESPONSE, content_type=self.CONTENT_TYPE_HTML)
                 else:
-                    content = json.dumps(content)
-                    response = self.RESPONSE_HEADERS.format(status=self.HTTP_200,length=len(content), response=content, content_type=self.CONTENT_TYPE_JSON)
+                    if(method == "GET"):
+                        if type(content) == FunctionType:
+                            raise Exception("Functions must be called with an GET request")
+                        elif type(content) == MethodType:
+                            content = content()
+                        content = json.dumps(content)
+                        response = self.RESPONSE_HEADERS.format(status=self.HTTP_200,length=len(content), response=content, content_type=self.CONTENT_TYPE_JSON)
+                    elif(method == "POST"):
+                        content = json.dumps(content(**parameters))
+                        response = self.RESPONSE_HEADERS.format(status=self.HTTP_200, length=len(content),
+                                                                response=content, content_type=self.CONTENT_TYPE_JSON)
+                    else:
+                        raise Exception("Method {method} is not supported".format(method=method))
             except Exception as e:
-                response = self.HTTP_500_RESPONSE.format(str(e))
+                response = self.HTTP_500_RESPONSE.format(infos=e)
                 response = self.RESPONSE_HEADERS.format(status=self.HTTP_500,length=len(response),response=response, content_type=self.CONTENT_TYPE_HTML)
+
             client_stream.write(response.encode('ascii'))
 
 
