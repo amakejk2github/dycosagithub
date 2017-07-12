@@ -14,17 +14,31 @@ class JobController(Driver):
         if not os.path.exists(self.JobDirectory):
             os.makedirs(self.JobDirectory)
 
-    def add_job(self):
-        pass
+    def add_job(self, name, jobfile):
+        filename = os.path.join(self.JobDirectory, name, ".py")
+        if os.path.isfile(filename):
+            raise Exception("There is already a job called {job}".format(job=name))
+        file = open(filename, 'w')
+        file.write(jobfile)
+        file.close()
 
-    def delete_job(self):
-        pass
+    def delete_job(self, name):
+        filename = os.path.join(self.JobDirectory, name, ".py")
+        if not os.path.isfile(filename):
+            raise Exception("There is no job called {job}".format(job=name))
+        os.remove(filename)
 
     def list_jobs(self):
-        pass
+        return [y[:-3] for y in os.listdir(self.JobDirectory)]
 
-    def get_job(self):
-        pass
+    def get_job(self, name):
+        filename = os.path.join(self.JobDirectory, name, ".py")
+        if not os.path.isfile(filename):
+            raise Exception("There is no job called {job}".format(job=name))
+        file = open(filename, 'r')
+        job = file.read()
+        file.close()
+        return job
 
     def run_periodically(self, period, func):
         self.periodic_jobs.append((func, period, time.now))
