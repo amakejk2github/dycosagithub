@@ -1,0 +1,69 @@
+{
+	"Device":
+	{
+		"Sleep": 1,
+		"Type":
+		{
+			"Value": "ESP-32",
+			"Visible": true,
+			"Setable": true
+		},
+		"Permanent_power":
+		{
+			"Value": false,
+			"Setable": false
+		},
+		"Location":
+		{
+			"Value":
+			{
+				"Text": "P6.302.1.2",
+				"Country": "",
+				"City": "",
+				"Street": "",
+				"Room": "",
+				"Latitude": "",
+				"Longitude": ""
+			},
+			"Setable": false
+		},
+		"Name":
+		{
+			"Value": "Peter"
+		}
+	},
+	"Drivers":
+	{
+		"PetersLüfter":
+		{
+			"InstanceOf": "Fan",
+			"Comment": "Test_Comment",
+			"Config":
+			{
+				"PIN": 42,
+				"Min": 10,
+				"Max": 100
+			}
+		}
+	},
+	"Network":
+	{
+		"IPv4":
+		{
+			"Address": "",
+			"Subnet": "",
+			"Gateway": "",
+			"DNS": "",
+			"DHCP": ""
+		},
+		"IPv6":
+		{
+			"Address": "",
+			"Subnet": "",
+			"Gateway": "",
+			"DNS": "",
+			"DHCP": ""
+		},
+		"MAC-Address": ""
+	}
+}
