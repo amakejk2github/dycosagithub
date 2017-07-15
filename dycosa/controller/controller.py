@@ -4,6 +4,8 @@ from dycosa.controller.multicast_sender import MulticastSender
 from dycosa.controller.multicast_receiver import MulticastReceiver
 #from dycosa.job.job_controller import JobController
 
+import json
+
 class Controller:
     """
     This class is used to hold the following components of dycosa
@@ -16,15 +18,24 @@ class Controller:
 
 
     def __init__(self):
+        self.config_data = self.load_config()
         self.drivers = self.load_drivers()
         self.multicast_sender = MulticastSender()
         self.multicast_receiver = MulticastReceiver()
 #       self.job_controller = JobController()
 
+    def parse_config(self):
+        pass
+
+
 
 
     def load_config(self):
-        pass
+        # Opens file and converts JSON object to strings, dicts, etc.
+        with open('Node_Config.json', encoding='utf-8') as node_config:
+            config_data = json.loads(node_config.read())
+            return config_data
+
 
 
     def load_drivers(self):
