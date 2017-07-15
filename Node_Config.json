@@ -6,12 +6,12 @@
 		{
 			"Value": "ESP-32",
 			"Visible": true,
-			"Setable": true
+			"Settable": true
 		},
 		"Permanent_power":
 		{
 			"Value": false,
-			"Setable": false
+			"Settable": false
 		},
 		"Location":
 		{
@@ -25,7 +25,7 @@
 				"Latitude": "",
 				"Longitude": ""
 			},
-			"Setable": false
+			"Settable": false
 		},
 		"Name":
 		{
