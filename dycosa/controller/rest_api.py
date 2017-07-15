@@ -51,7 +51,7 @@ Connection: Closed
         result = dict()
         result['functions'] = list()
         for fnc in dir(value):
-            if (not fnc.startswith("__") or fnc == "__name__"):  # Skip internal methods and propertys
+            if (not fnc.startswith("__") or fnc == "__name__"):  # Skip internal methods and properties
                 fnc_value = getattr(value, fnc)
                 if (type(fnc_value) == MethodType or type(fnc_value) == FunctionType):
                     result['functions'].append(fnc)
