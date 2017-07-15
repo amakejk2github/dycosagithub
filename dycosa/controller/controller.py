@@ -1,17 +1,31 @@
 from dycosa.drivers import *
 from dycosa.controller.rest_api import RestApi
+from dycosa.controller.multicast_sender import MulticastSender
+from dycosa.controller.multicast_receiver import MulticastReceiver
+#from dycosa.job.job_controller import JobController
 
 class Controller:
     """
     This class is used to hold the following components of dycosa
-    - The webserver
-    - The JobRunner
+    - The Webserver
+    - The Job Controller
     - The Multicast receiver
     - The Multicast sender
     Also it loads the Drivers and serves them to the components
     """
+
+
     def __init__(self):
         self.drivers = self.load_drivers()
+        self.multicast_sender = MulticastSender()
+        self.multicast_receiver = MulticastReceiver()
+#       self.job_controller = JobController()
+
+
+
+    def load_config(self):
+        pass
+
 
     def load_drivers(self):
         drivers = dict()
@@ -24,7 +38,7 @@ class Controller:
                     if (cls is not Driver and issubclass(cls, Driver)):
                         clsobj = cls()
                         if not hasattr(clsobj, "endpoint"):
-                            raise Exception("Driver {driver} does not implment the endpoint property".format(driver = clsobj.__name__))
+                            raise Exception("Driver {driver} does not implement the endpoint property".format(driver = clsobj.__name__))
                         endpoint = clsobj.endpoint
                         i = 0
                         while (endpoint + str(i)) in drivers:
