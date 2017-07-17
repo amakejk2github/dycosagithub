@@ -20,20 +20,37 @@ class Controller:
 
     def __init__(self):
         self.config_data = self.load_config()
+        self.config_path_dict = dict()
+        self.create_dict_for_config(self.config_data, "root", "")
         self.drivers = self.load_drivers()
         self.multicast_sender = MulticastSender()
         self.multicast_receiver = MulticastReceiver()
-
-    #       self.job_controller = JobController()
-
-    def parse_config(self):
-        pass
+        print(self.get_config("Text"))#Test function
+#       self.job_controller = JobController()
 
     def load_config(self):
         # Opens file and converts JSON object to strings, dicts, etc.
         with open('Node_Config.json', encoding='utf-8') as node_config:
             config_data = json.loads(node_config.read())
             return config_data
+
+    def create_dict_for_config(self, JSON_data, path, last_key):
+        try:
+            keys = JSON_data.items()
+            for key, value in JSON_data.items():
+                if key != "Settable" and key != "Visible":
+                    self.create_dict_for_config(JSON_data[key], path + "/" + key, key)  # TODO "Value" kann man nicht ordentlich wiederfinden FIXEN
+        except:
+            self.config_path_dict[last_key] = path
+
+    def get_config(self, attribute):
+        path = self.config_path_dict[attribute]
+        list_of_path = path.split('/')
+        data = self.config_data
+        for pathpart in list_of_path:
+            if pathpart != "root":
+                data = data[pathpart]
+        return data
 
     def load_drivers(self):
         drivers = dict()
