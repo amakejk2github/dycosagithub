@@ -2,9 +2,10 @@ from dycosa.drivers import *
 from dycosa.controller.rest_api import RestApi
 from dycosa.controller.multicast_sender import MulticastSender
 from dycosa.controller.multicast_receiver import MulticastReceiver
-#from dycosa.job.job_controller import JobController
+# from dycosa.job.job_controller import JobController
 
 import json
+
 
 class Controller:
     """
@@ -16,17 +17,15 @@ class Controller:
     Also it loads the Drivers and serves them to the components
     """
 
-
     def __init__(self):
         self.config_data = self.load_config()
+        self.config_path_dict = dict()
+        self.create_dict_for_config(self.config_data, "root", "")
         self.drivers = self.load_drivers()
         self.multicast_sender = MulticastSender()
         self.multicast_receiver = MulticastReceiver()
-#       self.job_controller = JobController()
-
-    def parse_config(self):
-        pass
-
+        print(self.get_config("Text"))#Test function
+    #       self.job_controller = JobController()
 
 
 
@@ -36,6 +35,23 @@ class Controller:
             config_data = json.loads(node_config.read())
             return config_data
 
+    def create_dict_for_config(self, JSON_data, path, last_key):
+        try:
+            keys = JSON_data.items()
+            for key, value in JSON_data.items():
+                if key != "Settable" and key != "Visible":
+                    self.create_dict_for_config(JSON_data[key], path + "/" + key, key)  # TODO "Value" kann man nicht ordentlich wiederfinden FIXEN
+        except:
+            self.config_path_dict[last_key] = path
+
+    def get_config(self, attribute):
+        path = self.config_path_dict[attribute]
+        list_of_path = path.split('/')
+        data = self.config_data
+        for pathpart in list_of_path:
+            if(pathpart != "root"):
+                data = data[pathpart]
+        return data
 
 
     def load_drivers(self):
@@ -49,13 +65,16 @@ class Controller:
                     if (cls is not Driver and issubclass(cls, Driver)):
                         clsobj = cls()
                         if not hasattr(clsobj, "endpoint"):
-                            raise Exception("Driver {driver} does not implement the endpoint property".format(driver = clsobj.__name__))
+                            raise Exception("Driver {driver} does not implement the endpoint property".format(
+                                driver=clsobj.__name__))
                         endpoint = clsobj.endpoint
                         i = 0
                         while (endpoint + str(i)) in drivers:
                             i = i + 1
                         drivers[endpoint + str(i)] = clsobj
-                        print("Loaded driver of type {type} with endpoint {endpoint}".format(type = clsobj.__name__, endpoint = endpoint + str(i)))
+                        print("Loaded driver of type {type} with endpoint {endpoint}".format(type=clsobj.__name__,
+                                                                                             endpoint=endpoint + str(
+                                                                                                 i)))
                 except:
                     pass
         return drivers
@@ -63,5 +82,3 @@ class Controller:
     def run(self):
         api = RestApi(self.drivers)
         api.run()
-
-
