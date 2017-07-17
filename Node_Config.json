@@ -4,14 +4,13 @@
 		"Sleep": 1,
 		"Type":
 		{
-			"Value": "ESP-32",
-			"Visible": true,
-			"Settable": true
+			"Value": "ESP-32"
 		},
 		"Permanent_power":
 		{
 			"Value": false,
-			"Settable": false
+			"Settable": false,
+			"Visible": false
 		},
 		"Location":
 		{
