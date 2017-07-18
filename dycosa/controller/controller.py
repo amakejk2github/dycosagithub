@@ -25,10 +25,10 @@ class Controller:
         self.drivers = self.load_drivers()
         self.multicast_sender = MulticastSender()
         self.multicast_receiver = MulticastReceiver()
-        print(self.get_config("Type"))  # Test function
-        print(self.get_config("Sleep"))  # Test function
-        print(self.get_config("Text"))  # Test function
-        print(self.get_config("Permanent_power"))  # Test function
+        self.set_config("Sleep", 0)
+        print (self.get_config("Sleep"))
+        #self.set_config("Permanent_power", True)
+    #    print(self.get_config("Permanent_power"))  # Test function
 
     #       self.job_controller = JobController()
 
@@ -38,12 +38,15 @@ class Controller:
             config_data = json.loads(node_config.read())
             return config_data
 
+    #Sinnvoll nicht nur tiefste keys sondern auch alle darüber zu speichern??
+    #Usecase: Anfrage nach Location, Rückgabe alle Werte nicht spezieller
+    #TODO implement return of dicts, not only single values
     def create_dict_for_config(self, JSON_data, path, last_key):
         try:
             for key, value in JSON_data.items():
                 if key == 'Value':
                     self.config_path_dict[last_key] = path
-                if key != 'Settable' and key != 'Visible' and key != 'Value':
+                if key != 'Settable' and key != 'Visible' and key != 'Value' and key != 'Drivers':
                     self.create_dict_for_config(JSON_data[key], path + "/" + key, key)
         except:
             self.config_path_dict[last_key] = path
@@ -70,6 +73,14 @@ class Controller:
             settable_value = data['Settable']
         except:
             pass
+
+        if not settable_value:
+            raise Exception(f"Attribute {attribute} is not settable")
+        try:
+            data["Value"] = entry
+        except:
+            #TODO Data kann nicht gesetzt werden (lokal/global), bzw hat keine auswirkungen, fixen
+            data = entry
 
 
 
