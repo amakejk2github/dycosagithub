@@ -75,12 +75,12 @@ def prefab(initial_values):
 ])
 
 def test_function1(prefab, args_name1, args_name2):
-    prefab_object.doStuff(args_name1)
-    assert prefab_object.result == args_name2
+    prefab.doStuff(args_name1)
+    assert prefab.result == args_name2
 
 def test_function2(prefab, args_name1, args_name2):
     with pytest.raises(dumbStuffException):
-        object.tryDumbStuff(args_name1, args_name2)
+        prefab.tryDumbStuff(args_name1, args_name2)
 
 #############################################################
 
