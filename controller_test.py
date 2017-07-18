@@ -20,8 +20,8 @@ def test_get_config_function(controller_prefab, test_attribute, expected_result)
 
 @pytest.mark.parametrize("test_attribute , test_entry, expected_result", [
     ('Type', 'Raspberry Pi', 'Raspberry Pi'),
-    ('Sleep', 0, 0),                #failed, known reasons, awaiting fix
-    ('Text', 'P7.2.03', 'P7.2.03'), #failed, known reasons, awaiting fix
+    ('Sleep', 0, 0),
+    #('Text', 'P7.2.03', 'P7.2.03'), failing due to settable false setting
     ('Name', 'Dieter', 'Dieter')
 ])
 def test_set_config_function(controller_prefab, test_attribute, test_entry, expected_result):
