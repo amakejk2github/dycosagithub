@@ -1,7 +1,10 @@
 {
 	"Device":
 	{
-		"Sleep": 1,
+		"Sleep":
+		{
+			"Value": 1
+		},
 		"Type":
 		{
 			"Value": "ESP-32"
@@ -14,22 +17,20 @@
 		},
 		"Location":
 		{
-			"LValue":
-			{
-				"Text": "P6.302.1.2",
-				"Country": "",
-				"City": "",
-				"Street": "",
-				"Room": "",
-				"Latitude": "",
-				"Longitude": ""
-			},
+			"Text": "P6.302.1.2",
+			"Country": "",
+			"City": "",
+			"Street": "",
+			"Room": "",
+			"Latitude": "",
+			"Longitude": "",
 			"Settable": false
 		},
 		"Name":
 		{
 			"Value": "Peter"
-		}
+		},
+		"Visible": false
 	},
 	"Drivers":
 	{
