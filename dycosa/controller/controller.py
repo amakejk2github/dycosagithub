@@ -25,11 +25,8 @@ class Controller:
         self.drivers = self.load_drivers()
         self.multicast_sender = MulticastSender()
         self.multicast_receiver = MulticastReceiver()
-        self.set_config("Sleep", 0)
-        print (self.get_config("Sleep"))
-        #self.set_config("Permanent_power", True)
-    #    print(self.get_config("Permanent_power"))  # Test function
-
+        #print (self.get_config("Type"))        #Interesting side effect, while "Device" is not visible, "Type" can
+        #print (self.get_config("Device"))      #still be accessed, useful or exploit ?? TODO decide what to do
     #       self.job_controller = JobController()
 
     def load_config(self):
@@ -44,12 +41,13 @@ class Controller:
     def create_dict_for_config(self, JSON_data, path, last_key):
         try:
             for key, value in JSON_data.items():
-                if key == 'Value':
-                    self.config_path_dict[last_key] = path
-                if key != 'Settable' and key != 'Visible' and key != 'Value' and key != 'Drivers':
-                    self.create_dict_for_config(JSON_data[key], path + "/" + key, key)
+                self.config_path_dict[last_key] = path
+                if key != 'Settable' and key != 'Visible' and key != 'Value' and last_key != 'Drivers':
+                    if self.create_dict_for_config(JSON_data[key], path + "/" + key, key):
+                        self.config_path_dict[key] = path
+            return False
         except:
-            self.config_path_dict[last_key] = path
+            return True
 
     def get_config(self, attribute):
         data = self.find_config_entry(attribute)
@@ -60,7 +58,10 @@ class Controller:
             pass
         if visible_value:
             try:
-                return data['Value']
+                if 'Value' in data.keys():
+                    return data['Value']
+                else:
+                    return data[attribute]
             except:
                 return data
         else:
@@ -73,14 +74,15 @@ class Controller:
             settable_value = data['Settable']
         except:
             pass
-
         if not settable_value:
             raise Exception(f"Attribute {attribute} is not settable")
         try:
-            data["Value"] = entry
+            if 'Value' in data.keys():
+                data["Value"] = entry
+            else:
+                data[attribute] = entry
         except:
-            #TODO Data kann nicht gesetzt werden (lokal/global), bzw hat keine auswirkungen, fixen
-            data = entry
+            raise Exception (f"Fatal error occured, while writting {attribute}")
 
 
 
@@ -92,7 +94,7 @@ class Controller:
         list_of_path = path.split('/')
         data = self.config_data
         for pathpart in list_of_path:
-            if pathpart != "root":
+            if pathpart != "root" and pathpart != '':
                 data = data[pathpart]
         return data
 
