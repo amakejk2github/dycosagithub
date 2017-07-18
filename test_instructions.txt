@@ -56,7 +56,7 @@ def test_function(args_name1, args_name2):
     object.doStuff(args_name1)
     assert object.result == args_name2
 
-########################################################
+#######################################################
 
 
 Combining all these to have the best experience
