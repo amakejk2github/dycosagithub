@@ -25,7 +25,7 @@ def test_get_config_function(controller_prefab, test_attribute, expected_result)
     ('Name', 'Dieter', 'Dieter')
 ])
 def test_set_config_function(controller_prefab, test_attribute, test_entry, expected_result):
-    controller_prefab.set_config(test_attribute, test_entry)
+    controller_prefab.set_config(test_attribute, test_entry, False)
     assert controller_prefab.get_config(test_attribute) == expected_result
 
 def test_get_config_function_2(controller_prefab):
@@ -34,4 +34,4 @@ def test_get_config_function_2(controller_prefab):
 
 def test_set_config_function_2(controller_prefab):
     with pytest.raises(Exception):
-        controller_prefab.set_config("Permanent_power" , 1)
+        controller_prefab.set_config("Permanent_power" , 1, False)
