@@ -4,7 +4,6 @@ from dycosa.controller.multicast_sender import MulticastSender
 from dycosa.controller.multicast_receiver import MulticastReceiver
 # from dycosa.job.job_controller import JobController
 
-import pprint
 import json
 
 
@@ -27,7 +26,7 @@ class Controller:
         self.multicast_receiver = MulticastReceiver()
         #print (self.get_config("Type"))        #Interesting side effect, while "Device" is not visible, "Type" can
         #print (self.get_config("Device"))      #still be accessed, useful or exploit ?? TODO decide what to do
-    #       self.job_controller = JobController()
+        #self.job_controller = JobController()
 
     def load_config(self):
         # Opens file and converts JSON object to strings, dicts, etc.
@@ -35,9 +34,6 @@ class Controller:
             config_data = json.loads(node_config.read())
             return config_data
 
-    #Sinnvoll nicht nur tiefste keys sondern auch alle darüber zu speichern??
-    #Usecase: Anfrage nach Location, Rückgabe alle Werte nicht spezieller
-    #TODO implement return of dicts, not only single values
     def create_dict_for_config(self, JSON_data, path, last_key):
         try:
             for key, value in JSON_data.items():
@@ -67,7 +63,7 @@ class Controller:
         else:
             raise Exception(f"Attribute {attribute} is not visible")
 
-    def set_config(self, attribute, entry):
+    def set_config(self, attribute, entry, write_to_file):
         data = self.find_config_entry(attribute)
         settable_value = True
         try:
@@ -83,13 +79,19 @@ class Controller:
                 data[attribute] = entry
         except:
             raise Exception (f"Fatal error occured, while writting {attribute}")
+        if write_to_file:
+            self.write_config_to_data()
 
+
+    def write_config_to_data(self):
+        with open('Node_config.json', 'w') as OutputFile:
+            json.dump(self.config_data, OutputFile, indent=4, sort_keys=False)
 
 
     def find_config_entry(self, attribute):
-        try:
+        if attribute in self.config_path_dict.keys():
             path = self.config_path_dict[attribute]
-        except:
+        else:
             raise Exception(f"Attribute {attribute} is not available")
         list_of_path = path.split('/')
         data = self.config_data
