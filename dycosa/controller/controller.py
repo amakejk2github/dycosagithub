@@ -23,22 +23,6 @@ class Controller:
         self.multicast_receiver = MulticastReceiver()
         #self.job_controller = JobController()
 
-
-
-
-
-    def find_config_entry(self, attribute):
-        if attribute in self.config_path_dict.keys():
-            path = self.config_path_dict[attribute]
-        else:
-            raise Exception(f"Attribute {attribute} is not available")
-        list_of_path = path.split('/')
-        data = self.config_data
-        for pathpart in list_of_path:
-            if pathpart != "root":
-                data = data[pathpart]
-        return data
-
     def load_drivers(self):
         drivers = dict()
         global_objs = list(globals().items())
