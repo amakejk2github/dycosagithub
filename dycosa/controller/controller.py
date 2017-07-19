@@ -18,74 +18,13 @@ class Controller:
     """
 
     def __init__(self):
-        self.config_data = self.load_config()
-        self.config_path_dict = dict()
-        self.create_dict_for_config(self.config_data, "root", "")
         self.drivers = self.load_drivers()
         self.multicast_sender = MulticastSender()
         self.multicast_receiver = MulticastReceiver()
-        #print (self.get_config("Type"))        #Interesting side effect, while "Device" is not visible, "Type" can
-        #print (self.get_config("Device"))      #still be accessed, useful or exploit ?? TODO decide what to do
         #self.job_controller = JobController()
 
-    def load_config(self):
-        # Opens file and converts JSON object to strings, dicts, etc.
-        with open('Node_Config.json', encoding='utf-8') as node_config:
-            config_data = json.loads(node_config.read())
-            return config_data
-
-    def create_dict_for_config(self, JSON_data, path, last_key):
-        try:
-            for key, value in JSON_data.items():
-                self.config_path_dict[last_key] = path
-                if key != 'Settable' and key != 'Visible' and key != 'Value' and last_key != 'Drivers':
-                    if self.create_dict_for_config(JSON_data[key], path + "/" + key, key):
-                        self.config_path_dict[key] = path
-            return False
-        except:
-            return True
-
-    def get_config(self, attribute):
-        data = self.find_config_entry(attribute)
-        visible_value = True
-        try:
-            visible_value = data['Visible']
-        except:
-            pass
-        if visible_value:
-            try:
-                if 'Value' in data.keys():
-                    return data['Value']
-                else:
-                    return data[attribute]
-            except:
-                return data
-        else:
-            raise Exception(f"Attribute {attribute} is not visible")
-
-    def set_config(self, attribute, entry, write_to_file):
-        data = self.find_config_entry(attribute)
-        settable_value = True
-        try:
-            settable_value = data['Settable']
-        except:
-            pass
-        if not settable_value:
-            raise Exception(f"Attribute {attribute} is not settable")
-        try:
-            if 'Value' in data.keys():
-                data["Value"] = entry
-            else:
-                data[attribute] = entry
-        except:
-            raise Exception (f"Fatal error occured, while writting {attribute}")
-        if write_to_file:
-            self.write_config_to_data()
 
 
-    def write_config_to_data(self):
-        with open('Node_config.json', 'w') as OutputFile:
-            json.dump(self.config_data, OutputFile, indent=4, sort_keys=False)
 
 
     def find_config_entry(self, attribute):
@@ -96,7 +35,7 @@ class Controller:
         list_of_path = path.split('/')
         data = self.config_data
         for pathpart in list_of_path:
-            if pathpart != "root" and pathpart != '':
+            if pathpart != "root":
                 data = data[pathpart]
         return data
 
