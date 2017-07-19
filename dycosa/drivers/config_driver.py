@@ -1,11 +1,15 @@
+from dycosa.drivers import Driver
+
 import json
 
 
-class Config_Controller:
+class Config_Driver(Driver):
     """
     This class holds the Config File,
     and serves the information to other classes
     """
+    __name__ = "Config_Driver"
+    endpoint = "Config"
 
     def __init__(self):
         self.config_data = self.load_config()
