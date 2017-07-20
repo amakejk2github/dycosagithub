@@ -8,12 +8,12 @@ class Config_Driver(Driver):
     This class holds the Config File,
     and serves the information to other classes
     """
+
     __name__ = "Config_Driver"
     endpoint = "Config"
 
     def __init__(self):
         self.config_data = self.load_config()
-
 
     def load_config(self):
         # Opens file and converts JSON object to strings, dicts, etc.
@@ -51,5 +51,5 @@ class Config_Driver(Driver):
             else:
                 data[attribute_name] = entry
         except:
-            raise Exception (f"Fatal error occurred, while writing {attribute_name}")
+            raise Exception(f"Fatal error occurred, while writing {attribute_name}")
         self.write_config_to_data()
