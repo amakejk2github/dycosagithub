@@ -29,7 +29,7 @@ class Config_Driver(Driver):
             with open('Node_config.json', 'w') as OutputFile:
                 json.dump(self.config_data, OutputFile, indent=4, sort_keys=False)
         except:
-            raise Exception(f"Write to config file failed")
+            raise Exception("Write to config file failed")
 
     def set_config(self, list, entry):
         data = self.config_data
@@ -39,17 +39,17 @@ class Config_Driver(Driver):
                 data = data[key]
                 attribute_name = key
             else:
-                raise Exception(f"Key {key} is not in the config")
+                raise Exception("Key {input} is not in the config".format(input=key))
         settable_value = True
         if 'Settable' in data.keys():
             settable_value = data['Settable']
         if not settable_value:
-            raise Exception(f"Attribute {attribute_name} is not settable")
+            raise Exception("Attribute {output} is not settable".format(output=attribute_name))
         try:
             if 'Value' in data.keys():
                 data["Value"] = entry
             else:
                 data[attribute_name] = entry
         except:
-            raise Exception(f"Fatal error occurred, while writing {attribute_name}")
+            raise Exception("Fatal error occurred, while writing {output}".format(output=attribute_name))
         self.write_config_to_data()
