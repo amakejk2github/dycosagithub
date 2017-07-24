@@ -34,13 +34,13 @@ class Controller:
                     if (cls is not Driver and issubclass(cls, Driver)):
                         clsobj = cls()
                         if not hasattr(clsobj, "endpoint"):
-                            raise Exception(f"Driver {clsobj.__name__} does not implement the endpoint property")
+                            raise Exception("Driver {name} does not implement the endpoint property".format(name = clsobj.__name__))
                         endpoint = clsobj.endpoint
                         i = 0
                         while (endpoint + str(i)) in drivers:
                             i = i + 1
                         drivers[endpoint + str(i)] = clsobj
-                        print(f"Loaded driver of type {clsobj.__name__} with endpoint {endpoint + str(i)}")
+                        print("Loaded driver of type {name} with endpoint {end}".format(name = clsobj.__name__, end = endpoint + str(i)))
                 except:
                     pass
         return drivers
