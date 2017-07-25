@@ -16,6 +16,7 @@ class Config_Driver(Driver):
     def __init__(self):
         self.config_data = self.load_config()
 
+
     def load_config(self):
         # Opens file and converts JSON object to strings, dicts, etc.
         with open('Node_Config.json', encoding='utf-8') as node_config:
@@ -35,13 +36,20 @@ class Config_Driver(Driver):
     def set_config(self, list, entry):
         data = self.config_data
         attribute_name = ""
+        m_value_found = False
         settable_value = True
         for key in list:
             if key in data.keys():
-                data = data[key]
-                if 'Settable' in data.keys():
-                    if not data['Settable']:
-                        settable_value = False
+                if not m_value_found:
+                    data = data[key]
+                if key == 'M_Value':
+                    m_value_found = True
+                try:
+                    if 'Settable' in data.keys():
+                        if not data['Settable']:
+                            settable_value = False
+                except:
+                    pass
                 attribute_name = key
             else:
                 raise Exception("Key {input} is not in the config".format(input=key))
@@ -49,11 +57,8 @@ class Config_Driver(Driver):
             raise Exception("Access to attribute {key_name} is restricted".format(key_name = attribute_name))
         if not settable_value:
             raise Exception("Attribute {output} is not settable".format(output=attribute_name))
-        try:
-            if 'Value' in data.keys():
-                data["Value"] = entry
-            else:
-                data[attribute_name] = entry
-        except:
-            raise Exception("Fatal error occurred, while writing {output}".format(output=attribute_name))
+        if 'Value' in data.keys():
+            data["Value"] = entry
+        else:
+            data[key] = entry
         self.write_config_to_data()
