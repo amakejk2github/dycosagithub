@@ -12,7 +12,8 @@
             "Visible": false
         },
         "Location": {
-            "Value": {
+            "M_Value":
+            {
                 "Text": "P6.3.03.1",
                 "Country": "",
                 "City": "",
@@ -21,7 +22,7 @@
                 "Latitude": "",
                 "Longitude": ""
             },
-            "Settable": false
+            "Settable": true
         },
         "Name": {
             "Value": "Peter"
