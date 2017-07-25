@@ -19,6 +19,6 @@ def test_set_function(prefab):
 
 def test_set_function2(prefab):
     with pytest.raises(Exception):
-        prefab.set_config(["Device", "Location", "Text"], "P7.2.03")
+        prefab.set_config(["Device", "Location", "M_Value", "Text"], "P7.2.03")
 
 
