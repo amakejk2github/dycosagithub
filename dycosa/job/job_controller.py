@@ -3,6 +3,7 @@ import time
 import asyncio
 from base64 import b64decode, b64encode
 from dycosa.drivers import Driver
+from dycosa.job import JobHelper
 class JobController(Driver):
     """
     This class manages the job and execute them if necessary
@@ -10,18 +11,35 @@ class JobController(Driver):
     JobDirectory = "job"
     timed_jobs = list()
     periodic_jobs = list()
-    jobs = list()
+    jobs = dict()
     def __init__(self):
+        self.jobHelper = JobHelper(self)
         if not os.path.exists(self.JobDirectory):
             os.makedirs(self.JobDirectory)
+        else:
+            for file in os.listdir(self.JobDirectory):
+                if file.endswith('.py'):
+                    self.load_job(file[:-3])
+
+    def load_job(self, name, job=None):
+        if job == None:
+            filename = os.path.join(self.JobDirectory, name + ".py")
+            file = open(filename, 'r')
+            job = file.read()
+            file.close()
+        loc = dict()
+        exec(job, dict(), loc)
+        self.jobs[name] = loc[name](self.jobHelper)
 
     def add_job(self, name, jobfile):
         filename = os.path.join(self.JobDirectory, name + ".py")
         if os.path.isfile(filename):
             raise Exception("There is already a job called {job}".format(job=name))
+        job = b64decode(jobfile).decode("ascii")
         file = open(filename, 'w')
-        file.write(b64decode(jobfile).decode("ascii"))
+        file.write(job)
         file.close()
+        self.load_job(name, job)
         return[]
 
     def delete_job(self, name):
@@ -69,5 +87,3 @@ class JobController(Driver):
             for fnc in self.timed_jobs:
                 if time.time()== fnc[1]:
                     fnc[0]()
-
-

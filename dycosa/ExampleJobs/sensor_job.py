@@ -1,4 +1,4 @@
-from dycosa.job.job import Job
+from dycosa.job import Job
 class SensorJob(Job):
 
     @Job.run_periodically("5m")
