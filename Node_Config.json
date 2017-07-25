@@ -22,7 +22,7 @@
                 "Latitude": "",
                 "Longitude": ""
             },
-            "Settable": true
+            "Settable": false
         },
         "Name": {
             "Value": "Peter"
