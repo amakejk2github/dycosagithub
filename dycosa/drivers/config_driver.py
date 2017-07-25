@@ -35,15 +35,18 @@ class Config_Driver(Driver):
     def set_config(self, list, entry):
         data = self.config_data
         attribute_name = ""
+        settable_value = True
         for key in list:
             if key in data.keys():
                 data = data[key]
+                if 'Settable' in data.keys():
+                    if not data['Settable']:
+                        settable_value = False
                 attribute_name = key
             else:
                 raise Exception("Key {input} is not in the config".format(input=key))
-        settable_value = True
-        if 'Settable' in data.keys():
-            settable_value = data['Settable']
+        if attribute_name == 'Settable' or attribute_name == 'Visible':
+            raise Exception("Access to attribute {key_name} is restricted".format(key_name = attribute_name))
         if not settable_value:
             raise Exception("Attribute {output} is not settable".format(output=attribute_name))
         try:

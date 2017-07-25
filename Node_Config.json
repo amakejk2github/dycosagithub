@@ -1,69 +1,59 @@
 {
-	"Device":
-	{
-		"Sleep":
-		{
-			"Value": 1
-		},
-		"Type":
-		{
-			"Value": "ESP-32"
-		},
-		"Permanent_power":
-		{
-			"Value": false,
-			"Settable": false,
-			"Visible": false
-		},
-		"Location":
-		{
-			"Text": "P6.302.1.2",
-			"Country": "",
-			"City": "",
-			"Street": "",
-			"Room": "",
-			"Latitude": "",
-			"Longitude": "",
-			"Settable": false
-		},
-		"Name":
-		{
-			"Value": "Peter"
-		},
-		"Visible": false
-	},
-	"Drivers":
-	{
-		"PetersLüfter":
-		{
-			"InstanceOf": "Fan",
-			"Comment": "Test_Comment",
-			"Config":
-			{
-				"PIN": 42,
-				"Min": 10,
-				"Max": 100
-			}
-		}
-	},
-	"Network":
-	{
-		"IPv4":
-		{
-			"Address": "",
-			"Subnet": "",
-			"Gateway": "",
-			"DNS": "",
-			"DHCP": ""
-		},
-		"IPv6":
-		{
-			"Address": "",
-			"Subnet": "",
-			"Gateway": "",
-			"DNS": "",
-			"DHCP": ""
-		},
-		"MAC-Address": ""
-	}
+    "Device": {
+        "Sleep": {
+            "Value": 1
+        },
+        "Type": {
+            "Value": "ESP-32"
+        },
+        "Permanent_power": {
+            "Value": false,
+            "Settable": false,
+            "Visible": false
+        },
+        "Location": {
+            "Value": {
+                "Text": "P6.302.1.2",
+                "Country": "",
+                "City": "",
+                "Street": "",
+                "Room": "",
+                "Latitude": "",
+                "Longitude": ""
+            },
+            "Settable": false
+        },
+        "Name": {
+            "Value": "Peter"
+        },
+        "Visible": false
+    },
+    "Drivers": {
+        "PetersL\u00fcfter": {
+            "InstanceOf": "Fan",
+            "Comment": "Test_Comment",
+            "Config": {
+                "PIN": 42,
+                "Min": 10,
+                "Max": 100
+            }
+        }
+    },
+    "Network": {
+        "IPv4": {
+            "Address": "",
+            "Subnet": "",
+            "Gateway": "",
+            "DNS": "",
+            "DHCP": ""
+        },
+        "IPv6": {
+            "Address": "",
+            "Subnet": "",
+            "Gateway": "",
+            "DNS": "",
+            "DHCP": ""
+        },
+        "MAC-Address": ""
+    }
 }
