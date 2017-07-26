@@ -39,6 +39,8 @@ class Config_Driver(Driver):
         m_value_found = False
         settable_value = True
         for key in list:
+            if key == 'Settable' or key == 'Visible':
+                raise Exception("Access to attribute {key_name} is restricted".format(key_name=key))
             if key in data.keys():
                 if not m_value_found:
                     data = data[key]
@@ -53,8 +55,6 @@ class Config_Driver(Driver):
                 attribute_name = key
             else:
                 raise Exception("Key {input} is not in the config".format(input=key))
-        if attribute_name == 'Settable' or attribute_name == 'Visible':
-            raise Exception("Access to attribute {key_name} is restricted".format(key_name = attribute_name))
         if not settable_value:
             raise Exception("Attribute {output} is not settable".format(output=attribute_name))
         if 'Value' in data.keys():
