@@ -34,6 +34,8 @@ class Config_Driver(Driver):
         return self.config_data
 
     def set_config(self, list, entry):
+        if entry == '':
+            raise Exception("Cannot write empty entry")
         data = self.config_data
         attribute_name = ""
         m_value_found = False
