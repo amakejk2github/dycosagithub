@@ -17,8 +17,18 @@ def test_set_function(prefab):
         config_data = json.loads(node_config.read())
     assert prefab.get_config() == config_data
 
-def test_set_function2(prefab):
-    with pytest.raises(Exception):
-        prefab.set_config(["Device", "Location", "M_Value", "Text"], "P7.2.03")
+@pytest.mark.parametrize("input_list, input_entry, output" , [
+    (["Device", "Location", "M_Value", "Text"], "P7.2.03" , "Attribute Text is not settable"),
+    (["Device", "Sleep", "Visible"], False, "Access to attribute Visible is restricted"),
+    (["Device", "Batterie"], "Off", "Key Batterie is not in the config"),
+    (["Device", "Sleep"], "", "Cannot write empty entry")
+])
+
+def test_set_function2(prefab, input_list, input_entry, output):
+    try:
+        prefab.set_config(input_list, input_entry)
+    except Exception as e:
+        assert str(e) == output
+
 
 
