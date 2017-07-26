@@ -29,6 +29,3 @@ def test_set_function2(prefab, input_list, input_entry, output):
         prefab.set_config(input_list, input_entry)
     except Exception as e:
         assert str(e) == output
-
-
-
