@@ -11,7 +11,10 @@ class JobController(Driver):
     JobDirectory = "job"
     timed_jobs = list()
     periodic_jobs = list()
+    always_jobs = list()
     jobs = dict()
+
+
     def __init__(self):
         self.jobHelper = JobHelper(self)
         if not os.path.exists(self.JobDirectory):
@@ -66,6 +69,9 @@ class JobController(Driver):
     def run_timed(self, time, func):
         self.timed_jobs.append((func, time))
 
+    def run_always(self, func):
+        self.always_jobs.append(func)
+
     def add_restendpoint(self, jobname, endpoint, function):
         if hasattr(self, jobname):
             obj = getattr(self, jobname)
@@ -75,15 +81,23 @@ class JobController(Driver):
             setattr(obj, endpoint, function)
             setattr(self, jobname, obj)
 
+    async def activate_run_always(self):
+        if len(self.always_jobs) != 0:
+            while True:
+                for fnc in self.always_jobs:
+                    fnc()
+        else:
+            await asyncio.sleep(1)
+
     @asyncio.coroutine
-    def run(self):
+    async def run(self):
         print("Job-Controller: controller is running")
         while True:
-            yield from asyncio.sleep(1)
+            await asyncio.wait([self.activate_run_always()], timeout= 1)
             for fnc in self.periodic_jobs:
                 if time.time() + fnc[1] >= fnc[2]:
                     fnc[0]()
                     fnc[2] = time.now
             for fnc in self.timed_jobs:
-                if time.time()== fnc[1]:
+                if time.time() == fnc[1]:
                     fnc[0]()
