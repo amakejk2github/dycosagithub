@@ -44,13 +44,15 @@ class Controller:
         #mcast_controller = McastController()
         api = RestApi(self.drivers)
         loop = asyncio.get_event_loop()
-        tasks = [
+        #tasks = (
+        #    job_controller.run(),
+        #    api.run()
+        #    mcast_controller.run()
+        #)
+        loop.run_until_complete(asyncio.gather(
             job_controller.run(),
-            api.run()
-            #mcast_controller.run(),
-            #config_controller.run() maybe not nessecarry?
-        ]
-        loop.run_until_complete(asyncio.wait(tasks))
+            api.run()       #TODO fix bug, when both are in loop none of them is really executed, if standing alone everything works
+        ))
         loop.close()
 
 
