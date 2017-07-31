@@ -30,8 +30,8 @@
         "Visible": false
     },
     "Drivers": {
-        "PetersL\u00fcfter": {
-            "InstanceOf": "Fan",
+        "PetersSensor": {
+            "InstanceOf": "sensor",
             "Comment": "Test_Comment",
             "Config": {
                 "PIN": 42,
