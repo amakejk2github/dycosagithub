@@ -14,16 +14,16 @@ class Config_Driver(Driver):
     endpoint = "Config"
 
     def __init__(self):
-        self.config_data = self.__load_config__()
+        self.config_data = self._load_config()
 
 
-    def __load_config__(self):
+    def _load_config(self):
         # Opens file and converts JSON object to strings, dicts, etc.
         with open('Node_Config.json', encoding='utf-8') as node_config:
             config_data = json.loads(node_config.read())
             return config_data
 
-    def __write_config_to_data__(self):
+    def _write_config_to_data(self):
         try:
             with open('Node_config.json', 'w') as OutputFile:
                 json.dump(self.config_data, OutputFile, indent=4, sort_keys=False)
@@ -63,4 +63,4 @@ class Config_Driver(Driver):
             data["Value"] = entry
         else:
             data[key] = entry
-        self.__write_config_to_data__()
+        self._write_config_to_data()
